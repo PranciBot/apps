@@ -15,5 +15,6 @@
 
     <modules>
         <module>lifestyle-service</module>
+        <module>worker</module>
     </modules>
 </project>
