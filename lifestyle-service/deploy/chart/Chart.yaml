@@ -1,0 +1,6 @@
+apiVersion: v2
+name: lifestyle-service
+description: A Helm chart for Kubernetes
+type: application
+version: 1.0.0-SNAPSHOT
+appVersion: "1.16.0"
