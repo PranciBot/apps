@@ -49,6 +49,14 @@ spec:
             - configMapRef:
                 name: {{ printf "%s-shared-config" .Release.Name }}
           {{- end }}
+          env:
+            {{- if .Values.env }}
+            {{- toYaml .Values.env | nindent 2 }}
+            {{- end }}
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "{{ .Values.global.infraName }}-event-dispatcher:9092"
+            - name: KAFKA_PRODUCER_RETRIES
+              value: "3"
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

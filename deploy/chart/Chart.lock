@@ -1,0 +1,6 @@
+dependencies:
+- name: lifestyle-service
+  repository: file://../../lifestyle-service/deploy/chart
+  version: 1.0.0-SNAPSHOT
+digest: sha256:d31eff3ae756e79ed91118e6d8e18aab7113e425fde499045ec37a002cc91b47
+generated: "2026-05-03T06:49:50.4177115+07:00"

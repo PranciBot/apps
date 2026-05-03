@@ -4,3 +4,7 @@ description: A Service umbrela chart.
 type: application
 version: 0.1.0
 appVersion: "1.16.0"
+dependencies:
+  - name: lifestyle-service
+    version: 1.0.0-SNAPSHOT
+    repository: file://../../lifestyle-service/deploy/chart
