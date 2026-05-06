@@ -17,5 +17,6 @@
         <module>lifestyle-service</module>
         <module>worker</module>
         <module>chat-interface</module>
+        <module>chat-server</module>
     </modules>
 </project>

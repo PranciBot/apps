@@ -1,5 +1,7 @@
 package com.prancibot;
 
+import com.prancibot.worker.BaseWorker;
+import com.prancibot.worker.CronExpression;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.quartz.Job;

@@ -1,6 +1,8 @@
 package com.prancibot;
 
-import com.prancibot.enums.PartType;
+import com.prancibot.worker.CronExpression;
+import com.prancibot.worker.CronExpressionBuilder;
+import com.prancibot.worker.enums.PartType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

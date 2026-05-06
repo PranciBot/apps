@@ -1,3 +1,5 @@
+import AssistantMessage from "@/components/AssistantMessage";
+import UserMessage from "@/components/UserMessage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -50,19 +52,14 @@ export default function ConversationDetailsScreen() {
           </View>
 
           <View style={styles.thread}>
-            <View style={[styles.bubble, styles.assistantBubble]}>
-              <Text style={styles.bubbleLabel}>Assistant</Text>
-              <Text style={styles.bubbleText}>
-                This is the detailed conversation view for the selected chat.
-              </Text>
-            </View>
+            <AssistantMessage
+              name={"Assistant"}
+              message={
+                "This is the detailed conversation view for the selected chat"
+              }
+            />
 
-            <View style={[styles.bubble, styles.userBubble]}>
-              <Text style={styles.bubbleLabelUser}>You</Text>
-              <Text style={styles.bubbleTextUser}>
-                Let’s keep this thread focused on the selected conversation.
-              </Text>
-            </View>
+            <UserMessage name={"You"} message={"Hello"} />
           </View>
 
           <View style={styles.composer}>
@@ -136,48 +133,6 @@ const styles = StyleSheet.create({
   thread: {
     flex: 1,
     gap: 12,
-  },
-  bubble: {
-    maxWidth: "88%",
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-  },
-  assistantBubble: {
-    backgroundColor: "#FFFFFF",
-    alignSelf: "flex-start",
-    borderTopLeftRadius: 8,
-  },
-  userBubble: {
-    backgroundColor: "#0F766E",
-    alignSelf: "flex-end",
-    borderTopRightRadius: 8,
-  },
-  bubbleLabel: {
-    color: "#0F766E",
-    fontSize: 12,
-    fontWeight: "700",
-    marginBottom: 6,
-    textTransform: "uppercase",
-    letterSpacing: 0.8,
-  },
-  bubbleLabelUser: {
-    color: "#A7F3D0",
-    fontSize: 12,
-    fontWeight: "700",
-    marginBottom: 6,
-    textTransform: "uppercase",
-    letterSpacing: 0.8,
-  },
-  bubbleText: {
-    color: "#0F172A",
-    fontSize: 16,
-    lineHeight: 22,
-  },
-  bubbleTextUser: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    lineHeight: 22,
   },
   composer: {
     flexDirection: "row",

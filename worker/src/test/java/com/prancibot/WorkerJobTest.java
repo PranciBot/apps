@@ -1,5 +1,6 @@
 package com.prancibot;
 
+import com.prancibot.worker.WorkerJob;
 import org.junit.jupiter.api.Test;
 import org.quartz.JobExecutionContext;
 
