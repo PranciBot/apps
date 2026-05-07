@@ -1,5 +1,9 @@
 package com.prancibot.chatserver.service.impl;
 
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.prancibot.chatserver.dto.ConversationDTO;
 import com.prancibot.chatserver.dto.CreateConversationDTO;
 import com.prancibot.chatserver.mapper.ConversationMapper;
@@ -8,11 +12,10 @@ import com.prancibot.chatserver.pagination.PaginationParam;
 import com.prancibot.chatserver.repository.ConversationRepository;
 import com.prancibot.chatserver.service.ConversationStoreService;
 import com.prancibot.common.logging.AppLogger;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
-
-import java.util.List;
-import java.util.Map;
+import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 @Transactional
@@ -39,8 +42,22 @@ public class ConversationStoreServiceImpl implements ConversationStoreService {
     }
 
     @Override
+    public ConversationDTO update(UUID id, CreateConversationDTO dto) {
+        Conversation conversation = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Conversation not found: " + id));
+        conversation.setName(dto.getName());
+        return mapper.toDTO(conversation);
+    }
+
+    @Override
+    public void delete(UUID id) {
+        Conversation conversation = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Conversation not found: " + id));
+        repository.deleteById(conversation.getId());
+    }
+
+    @Override
     public List<ConversationDTO> getAllConversation(PaginationParam param) {
-        long start = System.currentTimeMillis();
         return repository.findAll(param.getLimit(), param.getOffset())
                 .stream().map(mapper::toDTO).toList();
     }

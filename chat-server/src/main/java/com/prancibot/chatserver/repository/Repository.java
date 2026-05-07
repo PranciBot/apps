@@ -12,4 +12,6 @@ public interface Repository<E, T> {
     List<E> findAll(int limit, int offset);
 
     void save(E entity);
+
+    void deleteById(T id);
 }

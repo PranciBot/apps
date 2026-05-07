@@ -1,17 +1,18 @@
 package com.prancibot.chatserver.repository.impl;
 
-import com.prancibot.chatserver.model.Conversation;
-import com.prancibot.chatserver.pagination.PaginationParam;
-import com.prancibot.chatserver.repository.ConversationRepository;
-import com.prancibot.chatserver.utils.SearchQueryUtils;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.prancibot.chatserver.model.Conversation;
+import com.prancibot.chatserver.pagination.PaginationParam;
+import com.prancibot.chatserver.repository.ConversationRepository;
+import com.prancibot.chatserver.utils.SearchQueryUtils;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 @ApplicationScoped
 public class ConversationRepositoryImpl implements ConversationRepository {
@@ -30,9 +31,8 @@ public class ConversationRepositoryImpl implements ConversationRepository {
     @Override
     public List<Conversation> findByName(String name, PaginationParam param) {
         return em.createQuery(
-                        "SELECT c FROM Conversation c WHERE c.name = :name",
-                        Conversation.class
-                )
+                "SELECT c FROM Conversation c WHERE c.name = :name",
+                Conversation.class)
                 .setParameter("name", name)
                 .setFirstResult(param.getOffset())
                 .setMaxResults(param.getLimit())
@@ -52,9 +52,8 @@ public class ConversationRepositoryImpl implements ConversationRepository {
     @Override
     public List<Conversation> findAll(int limit, int offset) {
         return em.createQuery(
-                        "SELECT c FROM Conversation c",
-                        Conversation.class
-                )
+                "SELECT c FROM Conversation c",
+                Conversation.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();
@@ -63,5 +62,11 @@ public class ConversationRepositoryImpl implements ConversationRepository {
     @Override
     public void save(Conversation conversation) {
         em.persist(conversation);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        Optional.ofNullable(em.find(Conversation.class, id))
+                .ifPresent(em::remove);
     }
 }
