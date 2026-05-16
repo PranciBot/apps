@@ -43,7 +43,7 @@ httpRoute:
 env:
   HIBERNATE_ORM_SCHEMA_MANAGEMENT_STRATEGY: "drop-and-create"
   POSTGRES_USERNAME: "postgres"
-  POSTGRES_PASSWORD: "123456"
+  POSTGRES_PASSWORD: "password"
 resources: {}
 livenessProbe:
   httpGet:

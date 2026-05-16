@@ -52,13 +52,13 @@ spec:
               value: {{ .Values.env.HIBERNATE_ORM_SCHEMA_MANAGEMENT_STRATEGY }}
 
             - name: QUARKUS_DATASOURCE_USERNAME
-              value: "postgres"
+              value: {{ .Values.env.POSTGRES_USERNAME }}
 
             - name: QUARKUS_DATASOURCE_PASSWORD
-              value: "123456"
+              value: {{ .Values.env.POSTGRES_PASSWORD }}
 
             - name: QUARKUS_DATASOURCE_JDBC_URL
-              value: "jdbc:postgresql://172.22.27.194:5432/my-db"
+              value: "jdbc:postgresql://{{ .Values.global.infraName }}-persistent-storage:5432/masterdb"
 
             - name: QUARKUS_HIBERNATE_ORM_LOG_SQL
               value: "true"
