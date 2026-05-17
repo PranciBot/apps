@@ -13,7 +13,7 @@ export function ConversationList({
   onSelect,
 }: ConversationListProps) {
   return (
-    <div className="flex h-full flex-col gap-4">
+    <div className="flex h-full max-h-[calc(100vh-280px)] flex-col gap-4 pb-2">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-[#191510]">
           All conversations
@@ -22,7 +22,7 @@ export function ConversationList({
           {conversations.length}
         </span>
       </div>
-      <div className="flex flex-1 flex-col gap-3 overflow-y-auto pr-1">
+      <div className="flex flex-1 flex-col gap-3 overflow-y-auto pt-1 pr-1">
         {conversations.map((conversation) => (
           <ConversationCard
             key={conversation.id}

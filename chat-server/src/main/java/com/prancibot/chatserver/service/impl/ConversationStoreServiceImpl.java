@@ -65,8 +65,7 @@ public class ConversationStoreServiceImpl implements ConversationStoreService {
                                 throwWhenConversationNotFound(id)
                         );
         repository.deleteById(conversation.getId());
-        logger.info("Deleted conversation with id: {}", id
-        );
+        logger.info("Deleted conversation with id: {}", id);
     }
 
     @Override

@@ -56,7 +56,7 @@ public class ConversationController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete conversation")
     public ResponseEntity<@NonNull Void> deleteConversation(
-            @PathVariable UUID id
+            @PathVariable("id") UUID id
     ) {
         service.delete(id);
         return ResponseEntity.noContent().build();
