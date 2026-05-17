@@ -1,11 +1,15 @@
 package com.prancibot.chatserver.repository;
 
+import com.prancibot.chatserver.model.Conversation;
+import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.UUID;
 
-import com.prancibot.chatserver.model.Conversation;
-import com.prancibot.chatserver.pagination.PaginationParam;
-
-public interface ConversationRepository extends Repository<Conversation, UUID> {
-    List<Conversation> findByName(String name, PaginationParam param);
+@Repository
+public interface ConversationRepository extends JpaRepository<@NonNull Conversation, @NonNull UUID> {
+    List<Conversation> findByName(String name, Pageable pageable);
 }

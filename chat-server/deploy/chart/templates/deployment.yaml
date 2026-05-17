@@ -38,37 +38,12 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{- if .Values.image.registry }}{{ .Values.image.registry }}/{{- end }}{{- if .Values.image.group }}{{ .Values.image.group }}/{{- end }}{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          env:
-            - name: QUARKUS_DATASOURCE_DB_KIND
-              value: "postgresql"
-
-            - name: QUARKUS_HIBERNATE_ORM_SCHEMA_MANAGEMENT_STRATEGY
-              value: {{ .Values.env.HIBERNATE_ORM_SCHEMA_MANAGEMENT_STRATEGY }}
-
-            - name: QUARKUS_DATASOURCE_USERNAME
-              value: {{ .Values.env.POSTGRES_USERNAME }}
-
-            - name: QUARKUS_DATASOURCE_PASSWORD
-              value: {{ .Values.env.POSTGRES_PASSWORD }}
-
-            - name: QUARKUS_DATASOURCE_JDBC_URL
-              value: "jdbc:postgresql://{{ .Values.global.infraName }}-persistent-storage:5432/masterdb"
-
-            - name: QUARKUS_HIBERNATE_ORM_LOG_SQL
-              value: "true"
-
-            - name: QUARKUS_LIQUIBASE_MIGRATE_AT_START
-              value: "true"
-
-            - name: QUARKUS_LIQUIBASE_CHANGE_LOG
-              value: "db/changelog/db.changelog-master.xml"
-
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

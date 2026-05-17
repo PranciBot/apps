@@ -1,9 +1,5 @@
 package com.prancibot.chatserver.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import com.prancibot.chatserver.dto.ConversationDTO;
 import com.prancibot.chatserver.dto.CreateConversationDTO;
 import com.prancibot.chatserver.mapper.ConversationMapper;
@@ -11,14 +7,16 @@ import com.prancibot.chatserver.model.Conversation;
 import com.prancibot.chatserver.pagination.PaginationParam;
 import com.prancibot.chatserver.repository.ConversationRepository;
 import com.prancibot.chatserver.service.ConversationStoreService;
+import com.prancibot.common.exception.EntityNotFoundException;
 import com.prancibot.common.logging.AppLogger;
+import com.prancibot.common.monitoring.annotation.Timed;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.NotFoundException;
+import java.util.List;
+import java.util.UUID;
 
-@ApplicationScoped
-@Transactional
+@Service
 public class ConversationStoreServiceImpl implements ConversationStoreService {
     private final ConversationMapper mapper;
     private final ConversationRepository repository;
@@ -30,49 +28,62 @@ public class ConversationStoreServiceImpl implements ConversationStoreService {
     }
 
     @Override
+    @Timed
     public ConversationDTO create(CreateConversationDTO dto) {
-        long start = System.currentTimeMillis();
+        logger.info("Creating conversation with name: {}", dto.getName());
         Conversation conversation = mapper.toConversation(dto);
         repository.save(conversation);
-        logger.info("Successfully created conversation: \"{}\" in {} ms",
-                conversation.getName(),
-                System.currentTimeMillis() - start);
-
+        logger.info("Created conversation with id: {}", conversation.getId());
         return mapper.toDTO(conversation);
     }
 
     @Override
-    public ConversationDTO update(UUID id, CreateConversationDTO dto) {
-        Conversation conversation = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Conversation not found: " + id));
+    @Timed
+    public ConversationDTO update(
+            UUID id,
+            CreateConversationDTO dto
+    ) {
+        logger.info("Updating conversation with id: {}", id);
+        Conversation conversation =
+                repository.findById(id)
+                        .orElseThrow(() ->
+                                throwWhenConversationNotFound(id)
+                        );
+        logger.debug("Old conversation name: {}", conversation.getName());
         conversation.setName(dto.getName());
+        logger.info("Updated conversation {} with new name: {}", id, dto.getName());
         return mapper.toDTO(conversation);
     }
 
     @Override
+    @Timed
     public void delete(UUID id) {
-        Conversation conversation = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Conversation not found: " + id));
+        logger.info("Deleting conversation with id: {}", id);
+        Conversation conversation =
+                repository.findById(id)
+                        .orElseThrow(() ->
+                                throwWhenConversationNotFound(id)
+                        );
         repository.deleteById(conversation.getId());
+        logger.info("Deleted conversation with id: {}", id
+        );
     }
 
     @Override
+    @Timed
     public List<ConversationDTO> getAllConversation(PaginationParam param) {
-        return repository.findAll(param.getLimit(), param.getOffset())
+        return repository.findAll(PageRequest.of(param.getPage(), param.getSize()))
                 .stream().map(mapper::toDTO).toList();
     }
 
     @Override
+    @Timed
     public List<ConversationDTO> searchByName(String name, PaginationParam param) {
-        long start = System.currentTimeMillis();
-        Map<String, String> searchByNameCondition = Map.of("name", name);
-        List<ConversationDTO> conversationDTOS = repository
-                .findByConditions(searchByNameCondition, param.getLimit(), param.getOffset())
+        return repository.findByName(name, PageRequest.of(param.getPage(), param.getSize()))
                 .stream().map(mapper::toDTO).toList();
-        if (AppLogger.isDebugEnabled()) {
-            logger.debug("Successfully retrieved {} conversation match conditions {} in {} ms",
-                    conversationDTOS.size(), searchByNameCondition, System.currentTimeMillis() - start);
-        }
-        return conversationDTOS;
+    }
+
+    private EntityNotFoundException throwWhenConversationNotFound(UUID id) {
+        return new EntityNotFoundException("Conversation not found: " + id);
     }
 }
