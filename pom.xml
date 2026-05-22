@@ -18,5 +18,6 @@
         <module>worker</module>
         <module>chat-interface</module>
         <module>chat-server</module>
+        <module>common-ai-rest</module>
     </modules>
 </project>
