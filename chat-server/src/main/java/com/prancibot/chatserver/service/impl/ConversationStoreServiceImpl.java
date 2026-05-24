@@ -7,7 +7,7 @@ import com.prancibot.chatserver.model.Conversation;
 import com.prancibot.chatserver.pagination.PaginationParam;
 import com.prancibot.chatserver.repository.ConversationRepository;
 import com.prancibot.chatserver.service.ConversationStoreService;
-import com.prancibot.common.exception.EntityNotFoundException;
+import com.prancibot.chatserver.utils.ExceptionFactory;
 import com.prancibot.common.logging.AppLogger;
 import com.prancibot.common.monitoring.annotation.Timed;
 import org.springframework.data.domain.PageRequest;
@@ -47,7 +47,7 @@ public class ConversationStoreServiceImpl implements ConversationStoreService {
         Conversation conversation =
                 repository.findById(id)
                         .orElseThrow(() ->
-                                throwWhenConversationNotFound(id)
+                                ExceptionFactory.entityNotFoundException("Conversation", id)
                         );
         logger.debug("Old conversation name: {}", conversation.getName());
         conversation.setName(dto.getName());
@@ -62,7 +62,7 @@ public class ConversationStoreServiceImpl implements ConversationStoreService {
         Conversation conversation =
                 repository.findById(id)
                         .orElseThrow(() ->
-                                throwWhenConversationNotFound(id)
+                                ExceptionFactory.entityNotFoundException("Conversation", id)
                         );
         repository.deleteById(conversation.getId());
         logger.info("Deleted conversation with id: {}", id);
@@ -80,9 +80,5 @@ public class ConversationStoreServiceImpl implements ConversationStoreService {
     public List<ConversationDTO> searchByName(String name, PaginationParam param) {
         return repository.findByName(name, PageRequest.of(param.getPage(), param.getSize()))
                 .stream().map(mapper::toDTO).toList();
-    }
-
-    private EntityNotFoundException throwWhenConversationNotFound(UUID id) {
-        return new EntityNotFoundException("Conversation not found: " + id);
     }
 }

@@ -8,3 +8,86 @@ lifestyle-service:
     repository: lifestyle-service
     pullPolicy: Never
     tag: 1.0-SNAPSHOT
+
+chat-server:
+  image:
+    registry: ""
+    group: ""
+    repository: chat-server
+    pullPolicy: Never
+    tag: 1.0-SNAPSHOT
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: ""
+    - name: SERVER_PORT
+      value: ""
+    - name: SPRING_DATASOURCE_URL
+      value: ""
+    - name: SPRING_DATASOURCE_USERNAME
+      value: ""
+    - name: SPRING_DATASOURCE_PASSWORD
+      value: ""
+    - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+      value: ""
+    - name: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+      value: ""
+    - name: SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE
+      value: ""
+    - name: SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT
+      value: ""
+    - name: SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT
+      value: ""
+    - name: SPRING_DATASOURCE_HIKARI_MAX_LIFETIME
+      value: ""
+    - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+      value: ""
+    - name: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
+      value: ""
+    - name: SPRING_JPA_OPEN_IN_VIEW
+      value: ""
+    - name: SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_TIME_ZONE
+      value: ""
+    - name: SPRING_JPA_SHOW_SQL
+      value: ""
+    - name: SPRINGDOC_SWAGGER_UI_ENABLED
+      value: ""
+    - name: SCALAR_THEME
+      value: ""
+    - name: SCALAR_LAYOUT
+      value: ""
+    - name: SCALAR_DOCUMENT_DOWNLOAD_TYPE
+      value: ""
+    - name: SCALAR_ENABLED
+      value: ""
+    - name: SCALAR_URL
+      value: ""
+    - name: SCALAR_PATH
+      value: ""
+    - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+      value: ""
+    - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+      value: ""
+    - name: SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET
+      value: ""
+    - name: SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER
+      value: ""
+    - name: SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER
+      value: ""
+    - name: SPRING_KAFKA_PRODUCER_KEY_SERIALIZER
+      value: ""
+    - name: SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER
+      value: ""
+    - name: KAFKA_TOPIC_ID
+      value: ""
+    - name: OPENAI_API_KEY
+      value: ""
+    - name: OPENAI_BASE_URL
+      value: ""
+    - name: MODEL_NAME
+      value: ""
+    - name: LOGGING_LEVEL_COM_ZAXXER_HIKARI
+      value: ""
+    - name: LOGGING_LEVEL_ORG_HIBERNATE_SQL
+      value: ""
+    - name: LOGGING_LEVEL_ORG_HIBERNATE_ORM_JDBC_BIND
+      value: ""

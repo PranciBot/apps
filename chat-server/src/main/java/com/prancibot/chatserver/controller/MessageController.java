@@ -4,8 +4,12 @@ import com.prancibot.chatserver.dto.ChatDTO;
 import com.prancibot.chatserver.dto.CreateMessageDTO;
 import com.prancibot.chatserver.dto.MessageDTO;
 import com.prancibot.chatserver.dto.UpdateMessageDTO;
+import com.prancibot.chatserver.enums.ChatMessageRole;
+import com.prancibot.chatserver.kafka.model.ConversationMessageEvent;
 import com.prancibot.chatserver.pagination.PaginationParam;
 import com.prancibot.chatserver.service.MessageService;
+import com.prancibot.chatserver.service.StreamingChatService;
+import com.prancibot.chatserver.utils.DataFormater;
 import com.prancibot.common.RequestHeaders;
 import com.prancibot.common.logging.AppLogger;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,11 +38,13 @@ import java.util.stream.Stream;
 @RequestMapping("/v1")
 @Tag(name = "Messages")
 public class MessageController {
-    private final MessageService service;
+    private final MessageService messageService;
+    private final StreamingChatService streamingChatService;
     private final AppLogger logger = AppLogger.getLogger(getClass());
 
-    public MessageController(MessageService service) {
-        this.service = service;
+    public MessageController(MessageService service, StreamingChatService streamingChatService) {
+        this.messageService = service;
+        this.streamingChatService = streamingChatService;
     }
 
     @PostMapping("/conversations/{conversationId}/messages")
@@ -47,7 +53,7 @@ public class MessageController {
             @PathVariable UUID conversationId,
             @RequestBody CreateMessageDTO dto
     ) {
-        MessageDTO message = service.create(conversationId, dto);
+        MessageDTO message = messageService.create(conversationId, dto);
         return ResponseEntity
                 .created(URI.create("/v1/messages/" + message.getId()))
                 .build();
@@ -69,19 +75,18 @@ public class MessageController {
         response.setHeader(RequestHeaders.ACCEL_BUFFERING, "no");
         return outputStream -> {
             StringBuilder buffer = new StringBuilder();
-            try (Stream<String> stream = service.chat(conversationId, dtoList)) {
+            try (Stream<String> stream = streamingChatService.chat(conversationId, dtoList)) {
                 stream.forEach(chunk -> {
                     try {
                         buffer.append(chunk);
-                        outputStream.write(formatSSEData(chunk).getBytes(StandardCharsets.UTF_8));
+                        outputStream.write(DataFormater.formatSSEData(chunk).getBytes(StandardCharsets.UTF_8));
                         outputStream.flush();
                     } catch (Exception e) {
                         throw new RuntimeException("Failed to write chat chunk to output stream", e);
                     }
                 });
             }
-            logger.info("Message: {}", buffer.toString());
-            logger.info("Completed chat stream for conversation: {}, total response length: {}", conversationId, buffer.length());
+            streamingChatService.onStreamingChatDone(new ConversationMessageEvent(conversationId, ChatMessageRole.ASSISTANT, buffer.toString()));
         };
     }
 
@@ -91,7 +96,7 @@ public class MessageController {
             @PathVariable("conversationId") UUID conversationId,
             PaginationParam pagination
     ) {
-        return ResponseEntity.ok(service.listByConversation(conversationId, pagination));
+        return ResponseEntity.ok(messageService.listByConversation(conversationId, pagination));
     }
 
     @GetMapping("/messages/{id}")
@@ -102,7 +107,7 @@ public class MessageController {
     public ResponseEntity<@NonNull MessageDTO> getMessage(
             @PathVariable("id") UUID id
     ) {
-        return ResponseEntity.ok(service.getById(id));
+        return ResponseEntity.ok(messageService.getById(id));
     }
 
     @PutMapping("/messages/{id}")
@@ -111,7 +116,7 @@ public class MessageController {
             @PathVariable("id") UUID id,
             @RequestBody UpdateMessageDTO dto
     ) {
-        return ResponseEntity.ok(service.update(id, dto));
+        return ResponseEntity.ok(messageService.update(id, dto));
     }
 
     @DeleteMapping("/messages/{id}")
@@ -119,12 +124,8 @@ public class MessageController {
     public ResponseEntity<@NonNull Void> deleteMessage(
             @PathVariable("id") UUID id
     ) {
-        service.delete(id);
+        messageService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private String formatSSEData(String data) {
-        return "data: " + data.replace("\n", "\ndata: ") + "\n\n";
     }
 }
 
